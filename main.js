@@ -3,10 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const hoursEl = document.getElementById("hours");
   const minutesEl = document.getElementById("minutes");
   const secondsEl = document.getElementById("seconds");
-  const visitorsEl = document.querySelector(".stats-container p");
-
-  const userId = localStorage.getItem("userId") || uuidv4();
-  localStorage.setItem("userId", userId);
 
   const duration = 15 * 1000;
   const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
@@ -64,33 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const updateVisitors = async () => {
-    try {
-      const response = await fetch("/.netlify/functions/visitor");
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
-      visitorsEl.textContent = `Active Participants: ${data.LiveUsers}`;
-    } catch (error) {
-      console.error("Error fetching visitor count:", error);
-    }
-  };
-
-  const sendHeartbeat = async () => {
-    try {
-      await fetch("/.netlify/functions/heartbeat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
-    } catch (error) {
-      console.error("Error sending heartbeat:", error);
-    }
-  };
-
   const now = new Date();
   const currentYear = now.getFullYear();
   const newYearDate = new Date(
@@ -98,42 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
   ).getTime();
 
   countdown(newYearDate);
-  updateVisitors();
 
   const interval = setInterval(() => {
     countdown(newYearDate);
-    updateVisitors();
-  }, 10000);
-
-  setInterval(sendHeartbeat, 30000);
-
-  window.addEventListener("load", async () => {
-    try {
-      await fetch("/.netlify/functions/visitor", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
-      updateVisitors();
-    } catch (error) {
-      console.error("Error adding user to waitlist:", error);
-    }
-  });
-
-  window.addEventListener("beforeunload", async () => {
-    try {
-      await fetch("/.netlify/functions/visitor", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId }),
-      });
-      updateVisitors();
-    } catch (error) {
-      console.error("Error removing user from waitlist:", error);
-    }
-  });
+  }, 1000);
 });

@@ -58,38 +58,3 @@ h1 {
     font-size: 3rem;
   }
 }
-
-.stats-container {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  display: flex;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 10px;
-  border-radius: 8px;
-}
-
-.image {
-  width: 10vw;
-  max-width: 50px;
-  height: 10vw; 
-  max-height: 50px;
-  background-color: #add8e6;
-  border-radius: 4px;
-  background-image: url('person.svg');
-  background-size: contain;
-  background-position: center;
-}
-
-.stats-container p {
-  margin: 10px;
-  font-size: 4vw;
-}
-
-@media (min-width: 768px) {
-  .stats-container p {
-    font-size: 1.2rem;
-  }
-}
-  
