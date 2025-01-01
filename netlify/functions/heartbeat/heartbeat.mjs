@@ -19,9 +19,10 @@ exports.handler = async (event, context) => {
     const database = client.db("UserData");
     const collection = database.collection("UserStats");
 
+    const { userId } = JSON.parse(event.body);
     await collection.updateOne(
       { _id: "userStats" },
-      { $set: { lastHeartbeat: new Date() } },
+      { $set: { [`users.${userId}`]: new Date() } },
       { upsert: true }
     );
 

@@ -1,4 +1,5 @@
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const { v4: uuidv4 } = require("uuid");
 require("dotenv").config();
 
 const uri = process.env.MONGODB_URI;
@@ -12,45 +13,46 @@ const client = new MongoClient(uri, {
 });
 
 exports.handler = async (event, context) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   try {
-    console.time("MongoDB Connection");
     await client.connect();
-    console.timeEnd("MongoDB Connection");
     const database = client.db("UserData");
     const collection = database.collection("UserStats");
 
     let response;
 
     if (event.httpMethod === "POST") {
-      console.time("POST Request");
-      await collection.updateMany(
-        {},
-        { $inc: { LiveUsers: 1, TotalUsers: 1 } }
+      const userId = uuidv4();
+      await collection.updateOne(
+        { _id: "userStats" },
+        { $inc: { LiveUsers: 1 }, $set: { [`users.${userId}`]: new Date() } },
+        { upsert: true }
       );
       response = {
         statusCode: 200,
-        body: JSON.stringify({ message: "User added to waitlist" }),
+        body: JSON.stringify({ message: "User added to waitlist", userId }),
       };
-      console.timeEnd("POST Request");
     } else if (event.httpMethod === "DELETE") {
-      console.time("DELETE Request");
-      await collection.updateMany({}, { $inc: { LiveUsers: -1 } });
+      const { userId } = JSON.parse(event.body);
+      await collection.updateOne(
+        { _id: "userStats" },
+        { $inc: { LiveUsers: -1 }, $unset: { [`users.${userId}`]: "" } },
+        { upsert: true }
+      );
       response = {
         statusCode: 200,
         body: JSON.stringify({ message: "User removed from waitlist" }),
       };
-      console.timeEnd("DELETE Request");
     } else if (event.httpMethod === "GET") {
-      console.time("GET Request");
-      const document = await collection.findOne({});
+      const document = await collection.findOne({ _id: "userStats" });
       response = {
         statusCode: 200,
         body: JSON.stringify({
-          LiveUsers: document.LiveUsers,
-          TotalUsers: document.TotalUsers,
+          LiveUsers: document.LiveUsers || 0,
+          TotalUsers: document.TotalUsers || 0,
         }),
       };
-      console.timeEnd("GET Request");
     } else {
       response = {
         statusCode: 405,
@@ -63,11 +65,12 @@ exports.handler = async (event, context) => {
     console.error("Error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: "Internal Server Error" }),
+      body: JSON.stringify({
+        message: "Internal Server Error",
+        error: error.message,
+      }),
     };
   } finally {
-    console.time("MongoDB Disconnection");
     await client.close();
-    console.timeEnd("MongoDB Disconnection");
   }
 };
