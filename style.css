@@ -1,0 +1,95 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  text-align: center;
+  padding: 0 5vw;
+}
+
+h1 {
+  margin-bottom: 5vh;
+  font-size: 5vw;
+}
+
+#countdown ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+#countdown li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 2vw;
+  font-size: 4vw;
+}
+
+#countdown span {
+  font-size: 6vw;
+  font-weight: bold;
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 3rem;
+  }
+
+  #countdown li {
+    font-size: 2rem;
+  }
+
+  #countdown span {
+    font-size: 3rem;
+  }
+}
+
+.stats-container {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.image {
+  width: 10vw;
+  max-width: 50px;
+  height: 10vw; 
+  max-height: 50px;
+  background-color: #add8e6;
+  border-radius: 4px;
+  background-image: url('person.svg');
+  background-size: contain;
+  background-position: center;
+}
+
+.stats-container p {
+  margin: 10px;
+  font-size: 4vw;
+}
+
+@media (min-width: 768px) {
+  .stats-container p {
+    font-size: 1.2rem;
+  }
+}
+  
