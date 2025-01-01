@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("load", async () => {
     try {
-      await fetch("/.netlify/functions/visitors", { method: "POST" });
+      await fetch("/.netlify/functions/visitor", { method: "POST" });
       updateVisitors();
     } catch (error) {
       console.error("Error adding user to waitlist:", error);
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   window.addEventListener("beforeunload", async () => {
     try {
-      await fetch("/.netlify/functions/visitors", { method: "DELETE" });
+      await fetch("/.netlify/functions/visitor", { method: "DELETE" });
     } catch (error) {
       console.error("Error removing user from waitlist:", error);
     }
