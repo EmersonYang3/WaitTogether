@@ -71,8 +71,14 @@ document.addEventListener("DOMContentLoaded", () => {
       visitorsEl.textContent = `Active Participants: ${data.LiveUsers}`;
     } catch (error) {
       console.error("Error fetching visitor count:", error);
-      const responseText = await response.text();
-      console.log("Response Text:", responseText);
+    }
+  };
+
+  const sendHeartbeat = async () => {
+    try {
+      await fetch("/.netlify/functions/heartbeat", { method: "POST" });
+    } catch (error) {
+      console.error("Error sending heartbeat:", error);
     }
   };
 
@@ -90,6 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
     updateVisitors();
   }, 1000);
 
+  setInterval(sendHeartbeat, 30000);
+
   window.addEventListener("load", async () => {
     try {
       await fetch("/.netlify/functions/visitor", { method: "POST" });
@@ -102,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("beforeunload", async () => {
     try {
       await fetch("/.netlify/functions/visitor", { method: "DELETE" });
+      updateVisitors();
     } catch (error) {
       console.error("Error removing user from waitlist:", error);
     }
