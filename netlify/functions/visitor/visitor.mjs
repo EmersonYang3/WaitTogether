@@ -26,7 +26,10 @@ exports.handler = async (event, context) => {
       const userId = uuidv4();
       await collection.updateOne(
         { _id: "userStats" },
-        { $inc: { LiveUsers: 1 }, $set: { [`users.${userId}`]: new Date() } },
+        {
+          $inc: { LiveUsers: 1, TotalUsers: 1 },
+          $set: { [`users.${userId}`]: new Date() },
+        },
         { upsert: true }
       );
       response = {
