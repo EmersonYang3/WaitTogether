@@ -31,10 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const updateVisitors = async () => {
     try {
       const response = await fetch("/.netlify/functions/visitors");
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const data = await response.json();
       visitorsEl.textContent = `People Waiting With You: ${data.LiveUsers}`;
     } catch (error) {
       console.error("Error fetching visitor count:", error);
+
+      const responseText = await response.text();
+      console.log("Response Text:", responseText);
     }
   };
 
