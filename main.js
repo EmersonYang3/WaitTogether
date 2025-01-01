@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const interval = setInterval(() => {
     countdown(newYearDate);
     updateVisitors();
-  }, 1000);
+  }, 10000);
 
   setInterval(sendHeartbeat, 30000);
 

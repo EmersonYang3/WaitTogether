@@ -46,10 +46,28 @@ exports.handler = async (event, context) => {
       };
     } else if (event.httpMethod === "GET") {
       const document = await collection.findOne({ _id: "userStats" });
+
+      const now = new Date();
+      const threshold = new Date(now - 2 * 60 * 1000);
+      const users = document.users || {};
+      let liveUsers = document.LiveUsers || 0;
+
+      Object.keys(users).forEach((userId) => {
+        if (new Date(users[userId]) < threshold) {
+          liveUsers -= 1;
+          delete users[userId];
+        }
+      });
+
+      await collection.updateOne(
+        { _id: "userStats" },
+        { $set: { LiveUsers: liveUsers, users } }
+      );
+
       response = {
         statusCode: 200,
         body: JSON.stringify({
-          LiveUsers: document.LiveUsers || 0,
+          LiveUsers: liveUsers,
           TotalUsers: document.TotalUsers || 0,
         }),
       };
