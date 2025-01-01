@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await response.json();
-      visitorsEl.textContent = `People Waiting With You: ${data.LiveUsers}`;
+      visitorsEl.textContent = `People Waiting With You: ${data}`;
     } catch (error) {
       console.error("Error fetching visitor count:", error);
 
